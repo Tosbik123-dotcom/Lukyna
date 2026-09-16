@@ -104,10 +104,10 @@
       font-weight: 500;
     }
 
-    /* SVG Grafischer Otter */
+    /* Neue SVG Grafik für Lukyna */
     .otter-graphic {
-      width: 180px;
-      height: 180px;
+      width: 230px;
+      height: 230px;
       cursor: pointer;
       transition: transform 0.2s ease;
     }
@@ -162,36 +162,80 @@
     <div class="pet-area">
       <div class="speech-bubble" id="dialogue">Hallo! Ich bin Lukyna und freue mich riesig, euch zu sehen! 💕</div>
       
-      <!-- Grafik-Otter Lukyna mit rosa Kleid und Schleife -->
+      <!-- Detaillierte Lukyna-Grafik mit Kleid, Schleife & Herzchen -->
       <svg class="otter-graphic" id="otter" onclick="petOtter()" viewBox="0 0 200 200">
+        <!-- Schwanz -->
+        <path d="M 45 155 Q 15 160 30 145 Q 60 130 80 148 Z" fill="#b08d79" stroke="#72503c" stroke-width="2"/>
+        
         <!-- Ohren -->
-        <circle cx="65" cy="60" r="15" fill="#8d6e63"/>
-        <circle cx="135" cy="60" r="15" fill="#8d6e63"/>
-        <circle cx="65" cy="60" r="8" fill="#d7ccc8"/>
-        <circle cx="135" cy="60" r="8" fill="#d7ccc8"/>
+        <circle cx="65" cy="58" r="14" fill="#b08d79" stroke="#72503c" stroke-width="2"/>
+        <circle cx="135" cy="58" r="14" fill="#b08d79" stroke="#72503c" stroke-width="2"/>
+        <circle cx="65" cy="58" r="7" fill="#e8d5c8"/>
+        <circle cx="135" cy="58" r="7" fill="#e8d5c8"/>
+
         <!-- Kopf -->
-        <circle cx="100" cy="90" r="50" fill="#a1887f"/>
-        <!-- Schnauze -->
-        <ellipse cx="100" cy="100" rx="22" ry="16" fill="#d7ccc8"/>
-        <ellipse cx="100" cy="93" rx="7" ry="5" fill="#4e342e"/>
-        <!-- Augen -->
-        <circle cx="82" cy="82" r="6" fill="#3e2723"/>
-        <circle cx="118" cy="82" r="6" fill="#3e2723"/>
-        <circle cx="84" cy="80" r="2" fill="#ffffff"/>
-        <circle cx="120" cy="80" r="2" fill="#ffffff"/>
-        <!-- Wangen -->
-        <circle cx="72" cy="95" r="7" fill="#f8bbd0" opacity="0.7"/>
-        <circle cx="128" cy="95" r="7" fill="#f8bbd0" opacity="0.7"/>
-        <!-- Schleife -->
-        <path d="M 125 45 Q 135 35 145 45 Q 135 55 125 45 Z" fill="#ec407a"/>
-        <path d="M 125 45 Q 115 35 105 45 Q 115 55 125 45 Z" fill="#ec407a"/>
-        <circle cx="125" cy="45" r="5" fill="#d81b60"/>
-        <!-- Kleid -->
-        <path d="M 65 135 L 135 135 L 150 190 L 50 190 Z" fill="#ec407a"/>
-        <rect x="65" y="132" width="70" height="8" fill="#ffffff" rx="4"/>
-        <!-- Pfoten -->
-        <ellipse cx="75" cy="145" rx="10" ry="14" fill="#a1887f"/>
-        <ellipse cx="125" cy="145" rx="10" ry="14" fill="#a1887f"/>
+        <ellipse cx="100" cy="88" rx="52" ry="46" fill="#c3a28e" stroke="#72503c" stroke-width="2"/>
+        
+        <!-- Helle Bauch/Gesichts-Fellzone -->
+        <ellipse cx="100" cy="98" rx="36" ry="28" fill="#f5e8dd"/>
+
+        <!-- Augen & Augenbrauen -->
+        <ellipse cx="78" cy="82" rx="7" ry="8" fill="#3e2723"/>
+        <ellipse cx="122" cy="82" rx="7" ry="8" fill="#3e2723"/>
+        <circle cx="76" cy="79" r="2.5" fill="#ffffff"/>
+        <circle cx="120" cy="79" r="2.5" fill="#ffffff"/>
+        <path d="M 72 71 Q 78 68 84 71" stroke="#5d4037" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M 116 71 Q 122 68 128 71" stroke="#5d4037" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+        <!-- Nase & Lächeln -->
+        <polygon points="100,90 92,97 108,97" fill="#4e342e" rx="3" ry="3"/>
+        <path d="M 92 102 Q 100 110 108 102" stroke="#4e342e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+        <!-- Rosa Bäckchen -->
+        <ellipse cx="68" cy="95" rx="8" ry="5" fill="#f8bbd0" opacity="0.8"/>
+        <ellipse cx="132" cy="95" rx="8" ry="5" fill="#f8bbd0" opacity="0.8"/>
+
+        <!-- Rosa Schleife mit weißen Punkten -->
+        <g id="bow">
+          <path d="M 125 45 Q 140 32 150 45 Q 138 58 125 45 Z" fill="#ff80ab" stroke="#c2185b" stroke-width="1.5"/>
+          <path d="M 125 45 Q 110 32 100 45 Q 112 58 125 45 Z" fill="#ff80ab" stroke="#c2185b" stroke-width="1.5"/>
+          <circle cx="125" cy="45" r="6" fill="#f50057"/>
+          <!-- Punkte -->
+          <circle cx="138" cy="40" r="1.5" fill="#ffffff"/>
+          <circle cx="144" cy="47" r="1.5" fill="#ffffff"/>
+          <circle cx="112" cy="40" r="1.5" fill="#ffffff"/>
+          <circle cx="106" cy="47" r="1.5" fill="#ffffff"/>
+        </g>
+
+        <!-- Rosa Kleid mit gepufften Ärmeln & Pünktchen -->
+        <g id="dress">
+          <path d="M 62 130 Q 100 120 138 130 L 152 175 Q 100 188 48 175 Z" fill="#ff80ab" stroke="#c2185b" stroke-width="2"/>
+          <path d="M 68 126 Q 100 132 132 126" stroke="#ffffff" stroke-width="3" fill="none"/>
+          
+          <!-- Ärmel -->
+          <circle cx="60" cy="132" r="11" fill="#ff80ab" stroke="#c2185b" stroke-width="1.5"/>
+          <circle cx="140" cy="132" r="11" fill="#ff80ab" stroke="#c2185b" stroke-width="1.5"/>
+
+          <!-- Punkte auf Kleid -->
+          <circle cx="75" cy="148" r="2" fill="#ffffff" opacity="0.9"/>
+          <circle cx="95" cy="142" r="2" fill="#ffffff" opacity="0.9"/>
+          <circle cx="118" cy="146" r="2" fill="#ffffff" opacity="0.9"/>
+          <circle cx="135" cy="155" r="2" fill="#ffffff" opacity="0.9"/>
+          <circle cx="65" cy="162" r="2" fill="#ffffff" opacity="0.9"/>
+          <circle cx="100" cy="165" r="2" fill="#ffffff" opacity="0.9"/>
+        </g>
+
+        <!-- Füße -->
+        <ellipse cx="70" cy="180" rx="12" ry="8" fill="#b08d79" stroke="#72503c" stroke-width="2"/>
+        <ellipse cx="130" cy="180" rx="12" ry="8" fill="#b08d79" stroke="#72503c" stroke-width="2"/>
+
+        <!-- Pfoten, die das Herz halten -->
+        <ellipse cx="78" cy="146" rx="10" ry="8" fill="#b08d79" stroke="#72503c" stroke-width="1.5"/>
+        <ellipse cx="122" cy="146" rx="10" ry="8" fill="#b08d79" stroke="#72503c" stroke-width="1.5"/>
+
+        <!-- Rosa Herz in den Händen -->
+        <path d="M 100 152 C 100 152 86 138 86 145 C 86 150 100 159 100 159 C 100 159 114 150 114 145 C 114 138 100 152 100 152 Z" fill="#ff4081" stroke="#c2185b" stroke-width="1.5"/>
+        <circle cx="93" cy="143" r="1" fill="#ffffff"/>
       </svg>
     </div>
 
