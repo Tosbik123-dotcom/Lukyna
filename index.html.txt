@@ -1,0 +1,634 @@
+
+```html:otter_game.html
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Unser Otter-Abenteuer 🦦💖</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #fce7f3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #4a4a4a;
+    }
+
+    /* Smartphone Frame Wrapper */
+    .app-container {
+      width: 100%;
+      max-width: 420px;
+      height: 100vh;
+      max-height: 850px;
+      background: linear-gradient(180deg, #fff5f8 0%, #fbcfe8 100%);
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(244, 114, 182, 0.25);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Header & Stats */
+    .header {
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 2px solid #f9a8d4;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 20px;
+      font-weight: 700;
+      color: #db2777;
+      margin-bottom: 12px;
+    }
+
+    .stats-grid {
+      display: flex;
+      justify-content: space-around;
+      gap: 10px;
+    }
+
+    .stat-box {
+      flex: 1;
+      background: #ffffff;
+      padding: 8px 10px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #9d174d;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #f3e8ff;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 80%;
+      background: linear-gradient(90deg, #ec4899, #f43f5e);
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+
+    /* Main Pet Stage */
+    .stage {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 20px;
+    }
+
+    /* Speech Bubble */
+    .speech-bubble {
+      background: #ffffff;
+      border: 2px solid #f472b6;
+      border-radius: 18px;
+      padding: 10px 16px;
+      font-size: 13px;
+      color: #831843;
+      font-weight: 600;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(244, 114, 182, 0.15);
+      max-width: 85%;
+      text-align: center;
+      animation: bounce 2s infinite ease-in-out;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    /* Otter Avatar (CSS Vector Artwork) */
+    .otter-wrapper {
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .otter-wrapper:active {
+      transform: scale(0.95);
+    }
+
+    .otter-svg {
+      width: 190px;
+      height: 210px;
+      filter: drop-shadow(0 8px 16px rgba(157, 23, 77, 0.15));
+    }
+
+    /* Action Buttons Navigation */
+    .actions-nav {
+      display: flex;
+      justify-content: space-evenly;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.9);
+      border-top: 2px solid #f9a8d4;
+    }
+
+    .nav-btn {
+      background: #fdf2f8;
+      border: 2px solid #f472b6;
+      border-radius: 16px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #db2777;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+      flex: 1;
+      margin: 0 4px;
+    }
+
+    .nav-btn.active, .nav-btn:hover {
+      background: #db2777;
+      color: #ffffff;
+      border-color: #db2777;
+    }
+
+    /* Drawer Modal Panels */
+    .panel {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border-radius: 24px 24px 0 0;
+      padding: 20px;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.15);
+      transform: translateY(100%);
+      transition: transform 0.3s ease-out;
+      z-index: 10;
+      max-height: 65%;
+      overflow-y: auto;
+    }
+
+    .panel.open {
+      transform: translateY(0);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #9d174d;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: #9ca3af;
+      cursor: pointer;
+    }
+
+    /* Food Grid */
+    .food-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .food-item {
+      background: #fff5f8;
+      border: 2px solid #fbcfe8;
+      border-radius: 14px;
+      padding: 12px 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .food-item:hover {
+      border-color: #db2777;
+      transform: translateY(-2px);
+    }
+
+    .food-icon {
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
+
+    .food-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: #831843;
+    }
+
+    /* Connect 4 Mini Game */
+    .c4-board {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      background: #f472b6;
+      padding: 10px;
+      border-radius: 16px;
+      margin: 0 auto;
+      max-width: 320px;
+    }
+
+    .c4-cell {
+      aspect-ratio: 1;
+      background: #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    /* Note System */
+    .note-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .note-textarea {
+      width: 100%;
+      height: 80px;
+      border: 2px solid #f9a8d4;
+      border-radius: 12px;
+      padding: 10px;
+      font-size: 13px;
+      resize: none;
+      outline: none;
+    }
+
+    .submit-btn {
+      background: #db2777;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Floating Heart FX */
+    .floating-heart {
+      position: absolute;
+      font-size: 24px;
+      pointer-events: none;
+      animation: floatUp 1.2s ease-out forwards;
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-80px) scale(1.4); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Header with Stats -->
+    <div class="header">
+      <div class="title" contenteditable="true">Lilly 🦦💖</div>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-label"><i class="fa-solid fa-utensils"></i> Hunger</div>
+          <div class="progress-bar"><div class="progress-fill" id="hunger-bar" style="width: 80%;"></div></div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label"><i class="fa-solid fa-heart"></i> Freude</div>
+          <div class="progress-bar"><div class="progress-fill" id="happy-bar" style="width: 90%;"></div></div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label"><i class="fa-solid fa-bolt"></i> Energie</div>
+          <div class="progress-bar"><div class="progress-fill" id="energy-bar" style="width: 70%;"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Stage -->
+    <div class="stage" id="stage">
+      <div class="speech-bubble" id="speech-bubble" contenteditable="true">
+        Hallo! Ich freue mich so, euch zu sehen! 💕
+      </div>
+
+      <!-- Otter Avatar SVG Artwork -->
+      <div class="otter-wrapper" onclick="petOtter(event)">
+        <svg class="otter-svg" viewBox="0 0 200 220">
+          <!-- Ears -->
+          <circle cx="50" cy="50" r="16" fill="#8d5b4c" />
+          <circle cx="50" cy="50" r="9" fill="#f4a261" />
+          <circle cx="150" cy="50" r="16" fill="#8d5b4c" />
+          <circle cx="150" cy="50" r="9" fill="#f4a261" />
+
+          <!-- Head -->
+          <ellipse cx="100" cy="80" rx="65" ry="55" fill="#9e6655" />
+          <ellipse cx="100" cy="92" rx="40" ry="28" fill="#f4c2ac" />
+
+          <!-- Eyes -->
+          <ellipse cx="78" cy="72" rx="7" ry="9" fill="#1f2937" />
+          <circle cx="80" cy="69" r="3" fill="#ffffff" />
+          <ellipse cx="122" cy="72" rx="7" ry="9" fill="#1f2937" />
+          <circle cx="124" cy="69" r="3" fill="#ffffff" />
+
+          <!-- Nose & Mouth -->
+          <polygon points="100,82 93,76 107,76" fill="#4a2e2b" rx="2" />
+          <path d="M 93 88 Q 100 95 107 88" stroke="#4a2e2b" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+          <!-- Cheeks -->
+          <circle cx="66" cy="84" r="8" fill="#f472b6" opacity="0.5" />
+          <circle cx="134" cy="84" r="8" fill="#f472b6" opacity="0.5" />
+
+          <!-- Pink Bow on Head -->
+          <g transform="translate(130, 35) rotate(15)">
+            <polygon points="0,0 -18,-10 -18,10" fill="#ec4899" />
+            <polygon points="0,0 18,-10 18,10" fill="#ec4899" />
+            <circle cx="0" cy="0" r="6" fill="#f472b6" />
+          </g>
+
+          <!-- Body with Pink Dress -->
+          <path d="M 55 125 Q 100 115 145 125 L 160 190 Q 100 200 40 190 Z" fill="#f472b6" />
+          <!-- Dress Collar -->
+          <path d="M 75 123 Q 100 135 125 123" stroke="#ffffff" stroke-width="5" fill="none" stroke-linecap="round"/>
+
+          <!-- Paws -->
+          <ellipse cx="65" cy="150" rx="12" ry="16" fill="#8d5b4c" transform="rotate(20 65 150)" />
+          <ellipse cx="135" cy="150" rx="12" ry="16" fill="#8d5b4c" transform="rotate(-20 135 150)" />
+
+          <!-- Tail -->
+          <path d="M 45 175 Q 20 185 15 200 Q 30 205 55 188 Z" fill="#8d5b4c" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Actions Navigation -->
+    <div class="actions-nav">
+      <button class="nav-btn" onclick="openPanel('food-panel')">
+        <i class="fa-solid fa-cookie-bite"></i> Füttern
+      </button>
+      <button class="nav-btn" onclick="openPanel('games-panel')">
+        <i class="fa-solid fa-gamepad"></i> Spielen
+      </button>
+      <button class="nav-btn" onclick="startWalk()">
+        <i class="fa-solid fa-person-walking"></i> Spazieren
+      </button>
+      <button class="nav-btn" onclick="openPanel('notes-panel')">
+        <i class="fa-solid fa-envelope"></i> Post
+      </button>
+    </div>
+
+    <!-- Panel 1: Food -->
+    <div class="panel" id="food-panel">
+      <div class="panel-header">
+        <div class="panel-title">Was soll Lilly essen? 😋</div>
+        <button class="close-btn" onclick="closePanels()">&times;</button>
+      </div>
+      <div class="food-grid">
+        <div class="food-item" onclick="feedPet('Iced Coffee', 10, 15, 20)">
+          <div class="food-icon">🥤</div>
+          <div class="food-name">Iced Coffee</div>
+        </div>
+        <div class="food-item" onclick="feedPet('Kuchen', 25, 15, -5)">
+          <div class="food-icon">🍰</div>
+          <div class="food-name">Kuchen</div>
+        </div>
+        <div class="food-item" onclick="feedPet('Schokolade', 15, 20, 0)">
+          <div class="food-icon">🍫</div>
+          <div class="food-name">Schokolade</div>
+        </div>
+        <div class="food-item" onclick="feedPet('Steak', 40, 10, -10)">
+          <div class="food-icon">🥩</div>
+          <div class="food-name">Steak</div>
+        </div>
+        <div class="food-item" onclick="feedPet('Burger', 35, 10, -5)">
+          <div class="food-icon">🍔</div>
+          <div class="food-name">Burger</div>
+        </div>
+        <div class="food-item" onclick="feedPet('Chicken Tenders', 30, 10, 0)">
+          <div class="food-icon">🍗</div>
+          <div class="food-name">Chicken Tenders</div>
+        </div>
+        <div class="food-item" onclick="feedPet('Cinnamon Rolls', 25, 25, 5)">
+          <div class="food-icon">🌀</div>
+          <div class="food-name">Cinnamon Rolls</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 2: Mini-Games (4 Gewinnt mit Herzchen) -->
+    <div class="panel" id="games-panel">
+      <div class="panel-header">
+        <div class="panel-title">4 Gewinnt mit Herzchen 💖</div>
+        <button class="close-btn" onclick="closePanels()">&times;</button>
+      </div>
+      <div id="c4-status" style="text-align: center; margin-bottom: 10px; font-weight: 600; color: #db2777;">
+        Du (💖) bist am Zug!
+      </div>
+      <div class="c4-board" id="c4-board">
+        <!-- 7x6 Grid generated via JS -->
+      </div>
+    </div>
+
+    <!-- Panel 3: Notes / Post -->
+    <div class="panel" id="notes-panel">
+      <div class="panel-header">
+        <div class="panel-title">Partner-Nachricht hinterlassen 💌</div>
+        <button class="close-btn" onclick="closePanels()">&times;</button>
+      </div>
+      <div class="note-input-group">
+        <textarea class="note-textarea" id="note-text" placeholder="Schreibe eine süße Nachricht..."></textarea>
+        <button class="submit-btn" onclick="saveNote()">Nachricht an Lilly geben</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Game State
+    let state = {
+      hunger: 80,
+      happy: 90,
+      energy: 70,
+      lastNote: "Ich liebe dich! 💖"
+    };
+
+    // UI Updates
+    function updateBars() {
+      document.getElementById('hunger-bar').style.width = state.hunger + '%';
+      document.getElementById('happy-bar').style.width = state.happy + '%';
+      document.getElementById('energy-bar').style.width = state.energy + '%';
+    }
+
+    function setBubble(text) {
+      document.getElementById('speech-bubble').innerText = text;
+    }
+
+    // Modal Control
+    function openPanel(id) {
+      closePanels();
+      document.getElementById(id).classList.add('open');
+      if(id === 'games-panel') initC4();
+    }
+
+    function closePanels() {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('open'));
+    }
+
+    // Interactive Actions
+    function petOtter(event) {
+      state.happy = Math.min(100, state.happy + 5);
+      updateBars();
+      setBubble("Mmmmh, Kraulen tut so gut! 🥰");
+      spawnHeart(event.clientX, event.clientY);
+    }
+
+    function feedPet(foodName, hungerGain, happyGain, energyGain) {
+      state.hunger = Math.min(100, state.hunger + hungerGain);
+      state.happy = Math.min(100, state.happy + happyGain);
+      state.energy = Math.min(100, Math.max(0, state.energy + energyGain));
+      updateBars();
+      
+      setBubble(`Nom nom nom! ${foodName} war köstlich! 😋✨`);
+      closePanels();
+    }
+
+    function startWalk() {
+      if (state.energy < 20) {
+        setBubble("Ich bin zu müde für einen Spaziergang... 😴");
+        return;
+      }
+      state.energy -= 15;
+      state.happy = Math.min(100, state.happy + 20);
+      updateBars();
+      
+      const rewards = [
+        "Wir haben eine schöne glänzende Muschel gefunden! 🐚",
+        "Wir haben ein kleines Picknick im Park gemacht! 🧺",
+        "Lilly hat ein kleines Schleifchen im Gras entdeckt! 🎀"
+      ];
+      const randomReward = rewards[Math.floor(Math.random() * rewards.length)];
+      setBubble(randomReward);
+    }
+
+    function saveNote() {
+      const text = document.getElementById('note-text').value;
+      if (text.trim() !== '') {
+        state.lastNote = text;
+        setBubble(`Neuer Zettel: "${text}" 💌`);
+        document.getElementById('note-text').value = '';
+        closePanels();
+      }
+    }
+
+    function spawnHeart(x, y) {
+      const heart = document.createElement('div');
+      heart.className = 'floating-heart';
+      heart.innerText = '💖';
+      heart.style.left = (x - 12) + 'px';
+      heart.style.top = (y - 12) + 'px';
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 1200);
+    }
+
+    // Connect 4 Logic
+    let board = [];
+    let currentPlayer = '💖'; // Player is Pink Heart, Otter/AI is Gold Heart '💛'
+
+    function initC4() {
+      const boardEl = document.getElementById('c4-board');
+      boardEl.innerHTML = '';
+      board = Array(6).fill(null).map(() => Array(7).fill(null));
+      
+      for(let r=0; r<6; r++) {
+        for(let c=0; c<7; c++) {
+          const cell = document.createElement('div');
+          cell.className = 'c4-cell';
+          cell.dataset.col = c;
+          cell.onclick = () => playC4(c);
+          boardEl.appendChild(cell);
+        }
+      }
+      document.getElementById('c4-status').innerText = "Du (💖) bist am Zug!";
+    }
+
+    function playC4(col) {
+      for(let r=5; r>=0; r--) {
+        if(!board[r][col]) {
+          board[r][col] = '💖';
+          renderC4();
+          setBubble("Guter Zug! Mal sehen, was ich mache... 🤔");
+          setTimeout(otterTurnC4, 600);
+          return;
+        }
+      }
+    }
+
+    function otterTurnC4() {
+      let emptyCols = [];
+      for(let c=0; c<7; c++) if(!board[0][c]) emptyCols.push(c);
+      
+      if(emptyCols.length > 0) {
+        let randomCol = emptyCols[Math.floor(Math.random() * emptyCols.length)];
+        for(let r=5; r>=0; r--) {
+          if(!board[r][randomCol]) {
+            board[r][randomCol] = '💛';
+            break;
+          }
+        }
+        renderC4();
+      }
+    }
+
+    function renderC4() {
+      const cells = document.querySelectorAll('.c4-cell');
+      cells.forEach((cell, index) => {
+        let r = Math.floor(index / 7);
+        let c = index % 7;
+        cell.innerText = board[r][c] || '';
+      });
+    }
+
+    // Initial Setup
+    updateBars();
+  </script>
+</body>
+</html>
+```eof
+
