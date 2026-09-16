@@ -39,7 +39,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
     }
 
     .title-row {
@@ -55,46 +55,57 @@
       font-size: 26px;
     }
 
-    /* Fortschrittsbalken */
-    .stats-container {
+    /* Stimmungs-Auswahl */
+    .mood-selection-container {
       width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding: 0 10px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.6);
+      padding: 10px;
+      border-radius: 16px;
+      border: 1px solid #f8c3d1;
     }
 
-    .stat-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .mood-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #8c5b49;
+      margin-bottom: 8px;
     }
 
-    .stat-label {
+    .mood-buttons {
       display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 18px;
-      font-weight: 600;
-      color: #333333;
-      width: 110px;
+      justify-content: space-around;
+      gap: 6px;
     }
 
-    .bar-outer {
-      flex: 1;
-      height: 22px;
+    .mood-btn {
       background: #ffffff;
       border: 2px solid #e07a95;
       border-radius: 12px;
-      overflow: hidden;
-      padding: 2px;
+      padding: 6px 10px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
     }
 
-    .bar-inner {
-      height: 100%;
-      border-radius: 8px;
-      background: linear-gradient(to right, #ee7b97, #f39db3);
-      transition: width 0.3s ease;
+    .mood-btn span {
+      font-size: 10px;
+      font-weight: 600;
+      color: #333333;
+    }
+
+    .mood-btn.active {
+      background: #e07a95;
+      color: white;
+      transform: scale(1.08);
+    }
+
+    .mood-btn.active span {
+      color: white;
     }
 
     /* Hauptbereich & Sprechblase */
@@ -162,7 +173,7 @@
       transform: scale(1.05);
     }
 
-    /* Buttons unten */
+    /* Interaktions-Buttons unten */
     .actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -201,30 +212,29 @@
         <span class="title-icon">🦦💕</span>
       </div>
 
-      <div class="stats-container">
-        <div class="stat-row">
-          <div class="stat-label">
-            <span>🍕</span> Hunger
-          </div>
-          <div class="bar-outer">
-            <div class="bar-inner" id="hunger-bar" style="width: 80%;"></div>
-          </div>
-        </div>
-
-        <div class="stat-row">
-          <div class="stat-label">
-            <span>💖</span> Glück
-          </div>
-          <div class="bar-outer">
-            <div class="bar-inner" id="happy-bar" style="width: 65%;"></div>
-          </div>
+      <!-- Manuelle Stimmungs-Auswahl -->
+      <div class="mood-selection-container">
+        <div class="mood-title">Wie fühlst du dich gerade?</div>
+        <div class="mood-buttons">
+          <button class="mood-btn active" onclick="setMood('happy', this)">
+            😊 <span>Glücklich</span>
+          </button>
+          <button class="mood-btn" onclick="setMood('tired', this)">
+            😴 <span>Müde</span>
+          </button>
+          <button class="mood-btn" onclick="setMood('sad', this)">
+            🥺 <span>Traurig</span>
+          </button>
+          <button class="mood-btn" onclick="setMood('stressed', this)">
+            🤯 <span>Gestresst</span>
+          </button>
         </div>
       </div>
     </div>
 
     <div class="pet-area">
       <div class="speech-bubble" id="dialogue">
-        Hallo! Ich bin Lukyna und freue mich riesig, euch zu sehen! 💕
+        Hallo! Ich bin Lukyna. Wie geht es dir heute? 💕
       </div>
       <img src="lukyna.png" alt="Lukyna Otter" class="otter-image" id="otter" onclick="petOtter()">
     </div>
@@ -238,24 +248,46 @@
   </div>
 
   <script>
+    let currentMood = 'happy';
+
+    function setMood(mood, btnElement) {
+      currentMood = mood;
+      
+      // Button-Styling anpassen
+      document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
+      btnElement.classList.add('active');
+
+      // Reaktion von Lukyna auf deine Stimmung
+      const dialogue = document.getElementById('dialogue');
+      if (mood === 'happy') {
+        dialogue.innerText = "Schön, dass du glücklich bist! Das muntert mich auch auf! 🎉💖";
+      } else if (mood === 'tired') {
+        dialogue.innerText = "Müde? Komm, wir ruhen uns eine Runde gemeinsam aus... 😴💤";
+      } else if (mood === 'sad') {
+        dialogue.innerText = "Oh nein... Ich nehme dich ganz fest in den Arm! Ich bin da. ❤️";
+      } else if (mood === 'stressed') {
+        dialogue.innerText = "Tief durchatmen! Wir machen das ganz entspannt zusammen. 🌸";
+      }
+    }
+
     function petOtter() {
-      document.getElementById('dialogue').innerText = "*Squeak!* Lukyna freut sich sehr! 💕";
+      document.getElementById('dialogue').innerText = "*Squeak!* Lukyna kuschelt sich ganz nah an dich! 💕";
     }
 
     function feedOtter() {
-      document.getElementById('dialogue').innerText = "Mmmh, lecker! Danke! 🍱💖";
+      document.getElementById('dialogue').innerText = "Mmmh, lecker! Danke fürs Füttern! 🍱💖";
     }
 
     function playOtter() {
-      document.getElementById('dialogue').innerText = "Juhu, das macht riesigen Spaß! 🎉";
+      document.getElementById('dialogue').innerText = "Juhu, Ablenkung tut gut! Das macht Spaß! 🎉";
     }
 
     function sleepOtter() {
-      document.getElementById('dialogue').innerText = "Gute Nacht... Zzz... 🌙";
+      document.getElementById('dialogue').innerText = "Gute Nacht... Träum was Schönes! Zzz... 🌙";
     }
 
     function loveOtter() {
-      document.getElementById('dialogue').innerText = "Lukyna hat euch ganz doll lieb! 💖";
+      document.getElementById('dialogue').innerText = "Lukyna hat dich ganz doll lieb, egal wie du dich fühlst! 💖";
     }
   </script>
 </body>
