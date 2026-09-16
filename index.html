@@ -25,13 +25,14 @@
       width: 100vw;
       max-width: 420px;
       height: 100vh;
-      max-height: 850px;
+      max-height: 900px;
       background-color: #ffeef2;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 24px 20px;
+      padding: 20px;
       position: relative;
+      overflow-y: auto;
     }
 
     /* Header & Titel */
@@ -39,73 +40,107 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
     }
 
     .title-row {
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: 32px;
+      font-size: 28px;
       font-weight: 800;
       color: #d85c80;
     }
 
-    .title-icon {
-      font-size: 26px;
-    }
-
-    /* Stimmungs-Auswahl */
-    .mood-selection-container {
+    /* Stimmungs-Skala & Karte */
+    .status-card {
       width: 100%;
-      text-align: center;
-      background: rgba(255, 255, 255, 0.6);
-      padding: 10px;
-      border-radius: 16px;
-      border: 1px solid #f8c3d1;
+      background: #ffffff;
+      border: 2px solid #e07a95;
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 4px 10px rgba(224, 122, 149, 0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    .mood-title {
-      font-size: 14px;
+    .card-title {
+      font-size: 13px;
       font-weight: 700;
       color: #8c5b49;
-      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      justify-content: space-between;
     }
 
-    .mood-buttons {
+    .slider-container {
       display: flex;
-      justify-content: space-around;
+      flex-direction: column;
       gap: 6px;
     }
 
-    .mood-btn {
-      background: #ffffff;
-      border: 2px solid #e07a95;
-      border-radius: 12px;
-      padding: 6px 10px;
-      font-size: 18px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
+    .mood-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 10px;
+      border-radius: 5px;
+      background: linear-gradient(to right, #f48fb1, #ce93d8, #81c784);
+      outline: none;
     }
 
-    .mood-btn span {
-      font-size: 10px;
-      font-weight: 600;
-      color: #333333;
-    }
-
-    .mood-btn.active {
+    .mood-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
       background: #e07a95;
-      color: white;
-      transform: scale(1.08);
+      cursor: pointer;
+      border: 2px solid white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
 
-    .mood-btn.active span {
-      color: white;
+    .mood-label {
+      font-size: 15px;
+      font-weight: 700;
+      color: #c2185b;
+      text-align: center;
+    }
+
+    /* Need Input Area */
+    .need-box {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .need-input {
+      flex: 1;
+      border: 1.5px solid #f8c3d1;
+      border-radius: 12px;
+      padding: 8px 12px;
+      font-size: 13px;
+      outline: none;
+      background: #fff0f3;
+      color: #333;
+      user-select: text;
+    }
+
+    .need-input:focus {
+      border-color: #e07a95;
+      background: #ffffff;
+    }
+
+    .need-display {
+      font-size: 13px;
+      color: #5d4037;
+      background: #fff3e0;
+      border: 1px solid #ffe0b2;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-weight: 600;
     }
 
     /* Hauptbereich & Sprechblase */
@@ -124,17 +159,16 @@
       border: 2px solid #8c5b49;
       border-radius: 20px;
       padding: 12px 18px;
-      font-size: 16px;
+      font-size: 15px;
       color: #2b1e1a;
       text-align: center;
       font-weight: 500;
       position: relative;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
       width: 90%;
       box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
 
-    /* Sprechblasen-Pfeil unten rechts */
     .speech-bubble::after {
       content: '';
       position: absolute;
@@ -162,8 +196,8 @@
     }
 
     .otter-image {
-      max-width: 85%;
-      max-height: 320px;
+      max-width: 80%;
+      max-height: 280px;
       object-fit: contain;
       cursor: pointer;
       transition: transform 0.15s ease;
@@ -173,12 +207,11 @@
       transform: scale(1.05);
     }
 
-    /* Interaktions-Buttons unten */
+    /* Buttons unten */
     .actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 10px;
+      gap: 10px;
     }
 
     .btn {
@@ -186,7 +219,7 @@
       border: 2px solid #e07a95;
       border-radius: 16px;
       padding: 12px 8px;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 600;
       color: #2c2c2c;
       display: flex;
@@ -195,7 +228,6 @@
       gap: 8px;
       cursor: pointer;
       box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-      transition: background-color 0.1s ease;
     }
 
     .btn:active {
@@ -209,32 +241,31 @@
     <div class="header">
       <div class="title-row">
         <span>Lukyna</span>
-        <span class="title-icon">🦦💕</span>
+        <span>🦦💕</span>
       </div>
 
-      <!-- Manuelle Stimmungs-Auswahl -->
-      <div class="mood-selection-container">
-        <div class="mood-title">Wie fühlst du dich gerade?</div>
-        <div class="mood-buttons">
-          <button class="mood-btn active" onclick="setMood('happy', this)">
-            😊 <span>Glücklich</span>
-          </button>
-          <button class="mood-btn" onclick="setMood('tired', this)">
-            😴 <span>Müde</span>
-          </button>
-          <button class="mood-btn" onclick="setMood('sad', this)">
-            🥺 <span>Traurig</span>
-          </button>
-          <button class="mood-btn" onclick="setMood('stressed', this)">
-            🤯 <span>Gestresst</span>
-          </button>
+      <!-- Stimmungs- & Bedürfnis-Karte -->
+      <div class="status-card">
+        <div class="card-title">
+          <span>Wie geht es mir gerade?</span>
+          <span id="lock-icon" onclick="toggleLock()" style="cursor:pointer;">🔒 Mode</span>
         </div>
+
+        <div class="slider-container">
+          <input type="range" min="1" max="5" value="5" class="mood-slider" id="moodSlider" oninput="updateMood(this.value)">
+          <div class="mood-label" id="moodLabel">Mir geht’s fantastisch! ✨</div>
+        </div>
+
+        <div class="need-box">
+          <input type="text" id="needInput" class="need-input" placeholder="Was fehlt mir? (z.B. Aufmerksamkeit, Essen...)" onchange="updateNeed(this.value)">
+        </div>
+        <div class="need-display" id="needDisplay" style="display: none;"></div>
       </div>
     </div>
 
     <div class="pet-area">
       <div class="speech-bubble" id="dialogue">
-        Hallo! Ich bin Lukyna. Wie geht es dir heute? 💕
+        Hallo! Ich bin Lukyna und passe gut auf deine Stimmung auf! 💕
       </div>
       <img src="lukyna.png" alt="Lukyna Otter" class="otter-image" id="otter" onclick="petOtter()">
     </div>
@@ -248,25 +279,71 @@
   </div>
 
   <script>
-    let currentMood = 'happy';
+    const moodTexts = {
+      1: "Brauche ganz viel Liebe 🥺",
+      2: "Eher nicht so gut ☁️",
+      3: "Ganz okay 🙂",
+      4: "Gut drauf! 🌸",
+      5: "Mir geht’s fantastisch! ✨"
+    };
 
-    function setMood(mood, btnElement) {
-      currentMood = mood;
-      
-      // Button-Styling anpassen
-      document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
-      btnElement.classList.add('active');
+    const otterDialogues = {
+      1: "Ich bin da und halte dich ganz fest... 💕",
+      2: "Komm, wir machen es uns gemütlich. 🍵",
+      3: "Ein ruhiger Tag ist auch völlig in Ordnung! ✨",
+      4: "Schön, dass es dir gut geht! 🌷",
+      5: "Juhu! Das zaubert mir ein Lächeln ins Gesicht! 🎉"
+    };
 
-      // Reaktion von Lukyna auf deine Stimmung
-      const dialogue = document.getElementById('dialogue');
-      if (mood === 'happy') {
-        dialogue.innerText = "Schön, dass du glücklich bist! Das muntert mich auch auf! 🎉💖";
-      } else if (mood === 'tired') {
-        dialogue.innerText = "Müde? Komm, wir ruhen uns eine Runde gemeinsam aus... 😴💤";
-      } else if (mood === 'sad') {
-        dialogue.innerText = "Oh nein... Ich nehme dich ganz fest in den Arm! Ich bin da. ❤️";
-      } else if (mood === 'stressed') {
-        dialogue.innerText = "Tief durchatmen! Wir machen das ganz entspannt zusammen. 🌸";
+    let isLocked = false;
+
+    function updateMood(value) {
+      if (isLocked) return;
+      document.getElementById('moodLabel').innerText = moodTexts[value];
+      document.getElementById('dialogue').innerText = otterDialogues[value];
+      saveState();
+    }
+
+    function updateNeed(value) {
+      if (isLocked) return;
+      saveState();
+    }
+
+    // Sperr-Funktion (damit dein Freund nichts aus Versehentlich verstellt)
+    function toggleLock() {
+      isLocked = !isLocked;
+      const slider = document.getElementById('moodSlider');
+      const input = document.getElementById('needInput');
+      const lockIcon = document.getElementById('lock-icon');
+
+      if (isLocked) {
+        slider.disabled = true;
+        input.disabled = true;
+        lockIcon.innerText = "🔒 Geschützt";
+        lockIcon.style.color = "#c2185b";
+      } else {
+        slider.disabled = false;
+        input.disabled = false;
+        lockIcon.innerText = "🔓 Bearbeiten";
+        lockIcon.style.color = "#8c5b49";
+      }
+    }
+
+    function saveState() {
+      const state = {
+        mood: document.getElementById('moodSlider').value,
+        need: document.getElementById('needInput').value
+      };
+      localStorage.setItem('lukynaState', JSON.stringify(state));
+    }
+
+    function loadState() {
+      const saved = localStorage.getItem('lukynaState');
+      if (saved) {
+        const state = JSON.parse(saved);
+        document.getElementById('moodSlider').value = state.mood;
+        document.getElementById('needInput').value = state.need;
+        updateMood(state.mood);
       }
     }
 
@@ -287,8 +364,11 @@
     }
 
     function loveOtter() {
-      document.getElementById('dialogue').innerText = "Lukyna hat dich ganz doll lieb, egal wie du dich fühlst! 💖";
+      document.getElementById('dialogue').innerText = "Lukyna hat dich ganz doll lieb! 💖";
     }
+
+    // Beim Laden Zustand abrufen
+    loadState();
   </script>
 </body>
 </html>
