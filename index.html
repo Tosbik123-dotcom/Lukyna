@@ -19,6 +19,7 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
+      overflow: hidden;
     }
 
     #app-container {
@@ -52,7 +53,7 @@
       color: #d85c80;
     }
 
-    /* Stimmungs-Skala & Karte */
+    /* Stimmungs- & Bedürfnis-Karte */
     .status-card {
       width: 100%;
       background: #ffffff;
@@ -109,7 +110,6 @@
       text-align: center;
     }
 
-    /* Need Input Area */
     .need-box {
       display: flex;
       gap: 8px;
@@ -131,16 +131,6 @@
     .need-input:focus {
       border-color: #e07a95;
       background: #ffffff;
-    }
-
-    .need-display {
-      font-size: 13px;
-      color: #5d4037;
-      background: #fff3e0;
-      border: 1px solid #ffe0b2;
-      padding: 8px 12px;
-      border-radius: 12px;
-      font-weight: 600;
     }
 
     /* Hauptbereich & Sprechblase */
@@ -167,6 +157,7 @@
       margin-bottom: 10px;
       width: 90%;
       box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      z-index: 2;
     }
 
     .speech-bubble::after {
@@ -195,16 +186,48 @@
       z-index: 0;
     }
 
+    .otter-container {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+
     .otter-image {
       max-width: 80%;
       max-height: 280px;
       object-fit: contain;
       cursor: pointer;
-      transition: transform 0.15s ease;
+      transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     .otter-image:active {
-      transform: scale(1.05);
+      transform: scale(1.12);
+    }
+
+    /* Fliegende Herzen Animation */
+    .floating-heart {
+      position: absolute;
+      font-size: 24px;
+      pointer-events: none;
+      animation: floatUp 1.2s ease-out forwards;
+      z-index: 10;
+    }
+
+    @keyframes floatUp {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(0.6);
+      }
+      50% {
+        opacity: 0.9;
+        transform: translate(var(--translateX), -60px) scale(1.2);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--translateX), -120px) scale(1);
+      }
     }
 
     /* Buttons unten */
@@ -244,7 +267,6 @@
         <span>🦦💕</span>
       </div>
 
-      <!-- Stimmungs- & Bedürfnis-Karte -->
       <div class="status-card">
         <div class="card-title">
           <span>Wie geht es mir gerade?</span>
@@ -259,7 +281,6 @@
         <div class="need-box">
           <input type="text" id="needInput" class="need-input" placeholder="Was fehlt mir? (z.B. Aufmerksamkeit, Essen...)" onchange="updateNeed(this.value)">
         </div>
-        <div class="need-display" id="needDisplay" style="display: none;"></div>
       </div>
     </div>
 
@@ -267,14 +288,16 @@
       <div class="speech-bubble" id="dialogue">
         Hallo! Ich bin Lukyna und passe gut auf deine Stimmung auf! 💕
       </div>
-      <img src="lukyna.png" alt="Lukyna Otter" class="otter-image" id="otter" onclick="petOtter()">
+      <div class="otter-container" id="otterContainer">
+        <img src="lukyna.png" alt="Lukyna Otter" class="otter-image" id="otter" onclick="petOtter(event)">
+      </div>
     </div>
 
     <div class="actions">
-      <button class="btn" onclick="feedOtter()"><span>🍱</span> Füttern</button>
-      <button class="btn" onclick="playOtter()"><span>🎮</span> Spielen</button>
-      <button class="btn" onclick="sleepOtter()"><span>😴</span> Schlafen</button>
-      <button class="btn" onclick="loveOtter()"><span>❤️</span> Liebhaben</button>
+      <button class="btn" onclick="feedOtter(event)"><span>🍱</span> Füttern</button>
+      <button class="btn" onclick="playOtter(event)"><span>🎮</span> Spielen</button>
+      <button class="btn" onclick="sleepOtter(event)"><span>😴</span> Schlafen</button>
+      <button class="btn" onclick="loveOtter(event)"><span>❤️</span> Liebhaben</button>
     </div>
   </div>
 
@@ -296,6 +319,90 @@
     };
 
     let isLocked = false;
+    let audioCtx = null;
+
+    // Süßer Sound-Generator (Web Audio API)
+    function playCuteSound() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = 'sine';
+      
+      // Ton-Abfolge (zweistimmiges Glissando für "Squeak"-Sound)
+      const now = audioCtx.currentTime;
+      osc.frequency.setValueAtTime(587.33, now); // D5
+      osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); // A5
+
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.25);
+    }
+
+    // Erzeugt fliegende Herzen an der Klick-Position
+    function spawnHearts(event) {
+      const hearts = ['💖', '💕', '💗', '✨', '🌸'];
+      const container = document.getElementById('app-container');
+
+      const clickX = event.clientX || window.innerWidth / 2;
+      const clickY = event.clientY || window.innerHeight / 2;
+
+      for (let i = 0; i < 7; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'floating-heart';
+        heart.innerText = hearts[Math.floor(Math.random() * hearts.length)];
+        
+        // Zufällige Verschiebung nach links/rechts
+        const randomX = (Math.random() - 0.5) * 120;
+        heart.style.setProperty('--translateX', `${randomX}px`);
+        
+        heart.style.left = `${clickX - 12 + (Math.random() * 20 - 10)}px`;
+        heart.style.top = `${clickY - 20}px`;
+
+        container.appendChild(heart);
+
+        setTimeout(() => {
+          heart.remove();
+        }, 1200);
+      }
+    }
+
+    function petOtter(event) {
+      playCuteSound();
+      if (event) spawnHearts(event);
+      document.getElementById('dialogue').innerText = "*Squeak!* Lukyna kuschelt sich ganz nah an dich! 💕";
+    }
+
+    function feedOtter(event) {
+      playCuteSound();
+      if (event) spawnHearts(event);
+      document.getElementById('dialogue').innerText = "Mmmh, lecker! Danke fürs Füttern! 🍱💖";
+    }
+
+    function playOtter(event) {
+      playCuteSound();
+      if (event) spawnHearts(event);
+      document.getElementById('dialogue').innerText = "Juhu, Ablenkung tut gut! Das macht Spaß! 🎉";
+    }
+
+    function sleepOtter(event) {
+      playCuteSound();
+      document.getElementById('dialogue').innerText = "Gute Nacht... Träum was Schönes! Zzz... 🌙";
+    }
+
+    function loveOtter(event) {
+      playCuteSound();
+      if (event) spawnHearts(event);
+      document.getElementById('dialogue').innerText = "Lukyna hat dich ganz doll lieb! 💖";
+    }
 
     function updateMood(value) {
       if (isLocked) return;
@@ -309,7 +416,6 @@
       saveState();
     }
 
-    // Sperr-Funktion (damit dein Freund nichts aus Versehentlich verstellt)
     function toggleLock() {
       isLocked = !isLocked;
       const slider = document.getElementById('moodSlider');
@@ -347,27 +453,6 @@
       }
     }
 
-    function petOtter() {
-      document.getElementById('dialogue').innerText = "*Squeak!* Lukyna kuschelt sich ganz nah an dich! 💕";
-    }
-
-    function feedOtter() {
-      document.getElementById('dialogue').innerText = "Mmmh, lecker! Danke fürs Füttern! 🍱💖";
-    }
-
-    function playOtter() {
-      document.getElementById('dialogue').innerText = "Juhu, Ablenkung tut gut! Das macht Spaß! 🎉";
-    }
-
-    function sleepOtter() {
-      document.getElementById('dialogue').innerText = "Gute Nacht... Träum was Schönes! Zzz... 🌙";
-    }
-
-    function loveOtter() {
-      document.getElementById('dialogue').innerText = "Lukyna hat dich ganz doll lieb! 💖";
-    }
-
-    // Beim Laden Zustand abrufen
     loadState();
   </script>
 </body>
